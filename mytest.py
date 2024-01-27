@@ -12,4 +12,9 @@ import random
 #     if x.status_code !=200:
 #         print(x)
 #ty9694910498
-y = requests.post(f"http://127.0.0.1:8000/putdata/",json={'key':"ty53079386914",'value':45})
+#put data
+#y = requests.post(f"http://127.0.0.1:8000/putdata/",json={'key':"ty53079386917765",'value':88})
+
+
+y2 = requests.post(f"http://127.0.0.1:8000/getdata/",json={'key':"ty1357159654"})
+print(y2.status_code)

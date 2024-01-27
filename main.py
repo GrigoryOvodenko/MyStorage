@@ -2,13 +2,14 @@ from fastapi import FastAPI, HTTPException, status
 from fastapi.responses import PlainTextResponse,UJSONResponse
 from models import SaveDataClass,GetDataClass
 import CommonFunctions
+import datetime
 
 
 import os
 app = FastAPI()
 namefile = "storage.txt"
 namefilelog = "logjournal.txt"
-commonfunctions =CommonFunctions(namefile,namefilelog)
+commonfunctions =CommonFunctions.CommonCls(namefile,namefilelog)
 commonfunctions.create_file()
 commonfunctions.create_file()
 flag =False
@@ -28,12 +29,10 @@ async def putdata(savedataclass:SaveDataClass):
         print("fl check:",fl,key,value,indfound)
         if fl == False:
             # we will delete because we have data and insert new
-            print("NO:")
-            commonfunctions.deletedata(indfound)
+            commonfunctions.deletedata(indfound,key)
             commonfunctions.insdata( key, value)
         else:
             # we record new
-            print("YES:")
             commonfunctions.insdata(key,value)
     else:
         raise HTTPException(
@@ -41,7 +40,7 @@ async def putdata(savedataclass:SaveDataClass):
                             detail=f"Another transaction is opened",
                         )
 
-    return [{}]
+    return [{'success':True}]
 
 @app.post("/getdata")
 async def getdata(getdataclass:GetDataClass):
@@ -52,7 +51,27 @@ async def getdata(getdataclass:GetDataClass):
         print(namefile)
         #!check
         key = getdataclass_dict['key']
+        fl,indfound,valuefound = commonfunctions.get_my(key)
+        print("fl check:",fl)
+        if fl == False:
+            # we will delete because we have data and insert new
+            print("NO:",key,valuefound)
+            commonfunctions.writelog( f"GET SUCCESS key:{key} value:{valuefound}-TIME {str(datetime.datetime.now())}")
+        else:
+            # value is not found by key
+            commonfunctions.writelog(f"GET FAILED key:{key}-TIME {str(datetime.datetime.now())}")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Value is not found",
+            )
 
+    else:
+        raise HTTPException(
+                            status_code=status.HTTP_400_BAD_REQUEST,
+                            detail=f"Another transaction is opened",
+                        )
+
+    return [{'success': True}]
 # @app.post("/schedulerpoint", response_class=PlainTextResponse)
 # async def taskmanager(scheduler: Scheduler):
 #     scheduler_dict = scheduler.dict()

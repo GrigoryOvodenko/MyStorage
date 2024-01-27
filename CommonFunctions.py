@@ -4,7 +4,7 @@ import datetime
 
 
 class CommonCls:
-    def __int__(self,namefile,namefilelog):
+    def __init__(self,namefile,namefilelog):
         self.namefile = namefile
         self.namefilelog=namefilelog
     def create_file(self):
@@ -12,7 +12,7 @@ class CommonCls:
             open(self.namefile, "w")
     def writelog(self,task):
         with open(self.namefilelog, "a") as file_log:
-            file_log.write(f"{task} {str(datetime.datetime.now())}")
+            file_log.write(f"{task}")
             file_log.write("\n")
 # при транзакции снимаем копию чтоб ресторнуть если что
     def define_transaction(self):
@@ -29,14 +29,14 @@ class CommonCls:
             key = data[i][4::].split(";")[0]
 
             val =data[i].split("value:")[1].replace("\n","")
-            print(data[i],keysearch)
+
             if key == keysearch:
 
                 return False,i,val
         return True,-1,-1
 
 
-    def deletedata(self,ind):
+    def deletedata(self,ind,key):
         with open(self.namefile, "r") as file_:
             data = file_.readlines()
 
@@ -46,7 +46,7 @@ class CommonCls:
         os.remove(f"{os.getcwd()}//{self.namefile}") # remove old we have backup copy
         print("DELETE SUCCESS")
 
-        self.writelog( f"DELETE SUCCESS-TIME {str(datetime.datetime.now())}")
+        self.writelog( f"DELETE SUCCESS key:{key}-TIME {str(datetime.datetime.now())}")
         with open(self.namefile, "a") as file_obj:
             file_obj.writelines(new_result)
         file_obj.close()
@@ -59,4 +59,4 @@ class CommonCls:
             file_log.write("key:" + str(key) + ";value:" + str(value))
             file_log.write("\n")
         file_log.close()
-        self.writelog( f"INSERT SUCCESS-TIME {str(datetime.datetime.now())}")
+        self.writelog( f"INSERT SUCCESS key:{str(key)} value:{str(value)}-TIME {str(datetime.datetime.now())}")
