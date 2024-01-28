@@ -16,5 +16,8 @@ import random
 #y = requests.post(f"http://127.0.0.1:8000/putdata/",json={'key':"ty53079386917765",'value':88})
 
 
-y2 = requests.post(f"http://127.0.0.1:8000/getdata/",json={'key':"ty1357159654"})
-print(y2.status_code)
+# y2 = requests.post(f"http://127.0.0.1:8000/getdata/",json={'key':"ty1357159654"})
+# print(y2.json())
+
+y3= requests.post(f"http://127.0.0.1:8000/deldata/",json={'key':"ty530793869177"})
+print(y3.json(),y3.status_code)

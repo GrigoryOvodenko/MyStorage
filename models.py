@@ -10,5 +10,6 @@ class SaveDataClass(BaseModel):
     value:object
 class GetDataClass(BaseModel):
     key:str
-
+class DelDataClass(BaseModel):
+    key:str
 
