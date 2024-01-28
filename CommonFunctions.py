@@ -44,16 +44,27 @@ class CommonCls:
 
 
         os.remove(f"{os.getcwd()}//{self.namefile}") # remove old we have backup copy
-        print("DELETE SUCCESS")
+
 
         self.writelog( f"DELETE SUCCESS key:{key}-TIME {str(datetime.datetime.now())}")
         with open(self.namefile, "a") as file_obj:
             file_obj.writelines(new_result)
         file_obj.close()
-        print("UPDATE SUCCESS")
+
+    def findkeysbyvalue(self,value):
+        with open(self.namefile, "r") as file_:
+            data = file_.readlines()
+        file_.close()
+        lst = []
+        for i in range(0, len(data), 1):
+            key = data[i][4::].split(";")[0]
+
+            val = data[i].split("value:")[1].replace("\n", "")
+            if val == value:
+                lst.append(key)
+        return lst
+
     #добавить новое
-
-
     def insdata(self,key,value):
         with open(self.namefile, "a") as file_log:
             file_log.write("key:" + str(key) + ";value:" + str(value))

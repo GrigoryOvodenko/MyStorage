@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException, status
 from fastapi.responses import PlainTextResponse,UJSONResponse
-from models import SaveDataClass,GetDataClass,DelDataClass
+from models import SaveDataClass,GetDataClass,DelDataClass,ValDataClass
 import CommonFunctions
 import datetime
 
@@ -56,10 +56,10 @@ async def getdata(getdataclass:GetDataClass):
         if fl == False:
 
             print("NO:",key,valuefound)
-            commonfunctions.writelog( f"GET SUCCESS key:{key} value:{valuefound}-TIME {str(datetime.datetime.now())}")
+            commonfunctions.writelog( f"get success key:{key} value:{valuefound}-time {str(datetime.datetime.now())}")
         else:
             # value is not found by key
-            commonfunctions.writelog(f"GET FAILED key:{key}-TIME {str(datetime.datetime.now())}")
+            commonfunctions.writelog(f"get failed key:{key}-time {str(datetime.datetime.now())}")
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=f"Value is not found",
@@ -91,11 +91,11 @@ async def deldata(deldataclass:DelDataClass):
         if fl == False:
             # we will delete because we have data and insert new
             print("NO:",key,valuefound)
-            commonfunctions.writelog( f"DELETE SUCCESS key:{key} value:{valuefound}-TIME {str(datetime.datetime.now())}")
+            commonfunctions.writelog( f"delete success key:{key} value:{valuefound}-time {str(datetime.datetime.now())}")
             commonfunctions.deletedata(indfound, key)
         else:
             # value is not found by key
-            commonfunctions.writelog(f"DELETE FAILED key:{key}-TIME {str(datetime.datetime.now())}")
+            commonfunctions.writelog(f"delete failed key:{key}-time {str(datetime.datetime.now())}")
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=f"Key is not found",
@@ -111,3 +111,33 @@ async def deldata(deldataclass:DelDataClass):
 
 
 
+@app.post("/findkeys")
+async def findkeys(valdataclass:ValDataClass):
+    valdataclass_dict = valdataclass.dict()
+    # в случае если транзакций открытых нет
+    if flag == False:
+
+        valueinp = valdataclass_dict['value']
+        mykeys = commonfunctions.findkeysbyvalue(valueinp)
+
+        if mykeys != []:
+
+
+             commonfunctions.writelog( f"get all keys for value:{valueinp} success keys:{mykeys} -time {str(datetime.datetime.now())}")
+
+        else:
+            # keys are not found by value
+            commonfunctions.writelog(
+                f"get all keys for value:{valueinp} failed-time {str(datetime.datetime.now())}")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Keys are not found",
+            )
+
+    else:
+        raise HTTPException(
+                            status_code=status.HTTP_400_BAD_REQUEST,
+                            detail=f"Another transaction is opened",
+                        )
+
+    return [{'success': True,'data':mykeys}]

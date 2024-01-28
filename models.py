@@ -12,4 +12,6 @@ class GetDataClass(BaseModel):
     key:str
 class DelDataClass(BaseModel):
     key:str
+class ValDataClass(BaseModel):
+    value:str
 
