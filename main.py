@@ -1,28 +1,24 @@
 from fastapi import FastAPI, HTTPException, status
-from fastapi.responses import PlainTextResponse,UJSONResponse
-from models import SaveDataClass,GetDataClass,DelDataClass,ValDataClass,OpenTransDataClass
+from fastapi.responses import JSONResponse
+from models import GetDataClass,ValDataClass,OpenTransDataClass
 import CommonFunctions
 import datetime
 import requests
-import transactionmodule
-import os
+
+
 app = FastAPI()
-#app1 =FastAPI()
-namefile = "storage.txt"
-namefilelog = "logjournal.txt"
-namefiletrans = "transactions.txt"
+
 namefileopentransstate = "opentransact.txt"
-commonfunctions =CommonFunctions.CommonCls(namefile,namefilelog,namefiletrans,namefileopentransstate)
+commonfunctions =CommonFunctions.CommonCls()
 
 
-#flag =False
 
 
 @app.post("/opentransaction")
 async def opentransaction(opentransdataclass:OpenTransDataClass):
     opentransdataclass_dict = opentransdataclass.dict()
-    print("opentransdataclass_dict:",opentransdataclass_dict)
-    # print("flag:",flag)
+
+    commonfunctions.start_trans()
     with open(namefileopentransstate,"r") as fileop:
         myflag = fileop.readline()
 
@@ -30,41 +26,38 @@ async def opentransaction(opentransdataclass:OpenTransDataClass):
     if task == "putdata":
         key=opentransdataclass_dict['data']['key']
         value = opentransdataclass_dict['data']['value']
-        with open(namefileopentransstate, "w") as f:
-            f.write("True")
+        commonfunctions.recordopentransact("True")
         status1 = requests.post(f"http://127.0.0.1:5000/putdata/", json={'flag':myflag,'key': key, 'value': value})
         if status1.status_code ==200:
             requests.post(f"http://127.0.0.1:5000/commitransaction/", json={})
-            with open(namefileopentransstate, "w") as f:
-                f.write("False")
+
+            commonfunctions.recordopentransact("False")
         else:
-            with open(namefileopentransstate, "w") as f:
-                f.write("False")
+            commonfunctions.recordopentransact("False")
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Transaction is not closed",
+                detail=f"Transaction is not closed api:opentransaction task:putdata",
             )
     elif task == "deldata":
         key = opentransdataclass_dict['data']['key']
-        with open(namefileopentransstate, "w") as f:
-            f.write("True")
+        commonfunctions.recordopentransact("True")
         status1 = requests.post(f"http://127.0.0.1:5000/deldata/", json={'flag':myflag,'key': key})
         if status1.status_code == 200:
             requests.post(f"http://127.0.0.1:5000/commitransaction/", json={})
-            with open(namefileopentransstate, "w") as f:
-                f.write("False")
+            commonfunctions.recordopentransact("False")
         else:
-            with open(namefileopentransstate, "w") as f:
-                f.write("False")
+            commonfunctions.recordopentransact("False")
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Transaction is not closed",
+                detail=f"Transaction is not closed api:opentransaction task:deldata",
             )
     else:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Type of Task is not correct",
         )
+# переносим транзакции в постоянную область
+    commonfunctions.transfertranscations()
 
 
 

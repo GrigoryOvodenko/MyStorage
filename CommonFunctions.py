@@ -9,15 +9,22 @@ class CommonCls:
         self.namefilelog = "logjournal.txt"
         self.transactionfile = "transactions.txt"
         self.namefileopentransstate = "opentransact.txt"
+
+    def recordopentransact(self,flag):
+        with open(self.namefileopentransstate, "w") as f:
+            f.write(flag)
+
     def create_files(self):
         if os.path.isfile(self.namefile) == False:
             open(self.namefile, "w")
         if os.path.isfile(self.namefilelog) == False:
             open(self.namefilelog, "w")
-
+#если файла нет, то создаем его
         if os.path.isfile(self.namefileopentransstate) == False:
             with open(self.namefileopentransstate, "w") as f:
                 f.write("False")
+
+
         open(self.transactionfile, "w")
     def writelog(self,task):
         with open(self.namefilelog, "a") as file_log:
@@ -43,6 +50,17 @@ class CommonCls:
 
                 return False,i,val
         return True,-1,-1
+    def start_trans(self):
+        with open(self.transactionfile, "a") as file_obj:
+            file_obj.write("---Transcation start---")
+            file_obj.write("\n")
+
+    def transfertranscations(self):
+        with open(self.transactionfile,"r") as file1:
+            data=file1.readlines()
+        with open("listTransaction.txt","a") as f:
+            for el in data:
+                f.write(el)
 
     def write_task(self,nametasktrans):
         with open(self.transactionfile, "a") as file_obj:
@@ -64,7 +82,7 @@ class CommonCls:
         file_obj.close()
 
 
-        self.write_task("task:deldata")
+        self.write_task(f"task:deldata;key:{key};value:{value}")
 
         self.writelog( f"delete success key:{key} value:{value}-time {str(datetime.datetime.now())}")
 
@@ -87,5 +105,6 @@ class CommonCls:
             file_log.write("key:" + str(key) + ";value:" + str(value))
             file_log.write("\n")
         file_log.close()
-        self.write_task("task:putdata")
+
+        self.write_task(f"task:putdata;key:{key};value:{value}")
         self.writelog( f"insert success key:{str(key)} value:{str(value)}-time {str(datetime.datetime.now())}")

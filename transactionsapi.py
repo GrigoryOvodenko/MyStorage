@@ -1,11 +1,11 @@
 from fastapi import FastAPI, HTTPException, status
-from fastapi.responses import PlainTextResponse,UJSONResponse
-from models import SaveDataClass,GetDataClass,DelDataClass,ValDataClass,OpenTransDataClass
+from fastapi.responses import JSONResponse
+from models import SaveDataClass,DelDataClass
 import CommonFunctions
 import datetime
-import requests
+
 import transactionmodule
-import os
+
 app1 = FastAPI()
 transactionconstr = transactionmodule.TransactionCls()
 
@@ -17,7 +17,7 @@ commonfunctions.create_files()
 async def putdata(savedataclass:SaveDataClass):
     savedataclass_dict = savedataclass.dict()
     flag=savedataclass_dict['flag']
-    print("flag putdata:",flag)
+
     # в случае если транзакций открытых нет
     if flag == False:
 
@@ -26,7 +26,7 @@ async def putdata(savedataclass:SaveDataClass):
         key = savedataclass_dict['key']
         value = savedataclass_dict['value']
         fl,indfound,valuefound = commonfunctions.get_my(key)
-        print("fl check:",fl,key,value,indfound)
+
         if fl == False:
             # we will delete because we have data and insert new
             commonfunctions.deletedata(indfound,key,valuefound)
@@ -47,7 +47,7 @@ async def deldata(deldataclass:DelDataClass):
     deldataclass_dict = deldataclass.dict()
     # в случае если транзакций открытых нет
     flag=deldataclass_dict['flag']
-    print("flag deldata:", flag)
+
     if flag == False:
 
         key = deldataclass_dict['key']
@@ -82,3 +82,8 @@ async def commitransaction():
 
    flgcommit = transactionconstr.commit_transaction()
    return [{'success': flgcommit}]
+
+
+@app1.post("/rollbackapp")
+async def rollbackapp():
+    transactionconstr.rollbacktrans()
