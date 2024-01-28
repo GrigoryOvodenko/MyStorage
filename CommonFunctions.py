@@ -4,11 +4,11 @@ import datetime
 
 
 class CommonCls:
-    def __init__(self,namefile,namefilelog,transactionfile,namefileopentransstate):
-        self.namefile = namefile
-        self.namefilelog=namefilelog
-        self.transactionfile=transactionfile
-        self.namefileopentransstate=namefileopentransstate
+    def __init__(self):
+        self.namefile = "storage.txt"
+        self.namefilelog = "logjournal.txt"
+        self.transactionfile = "transactions.txt"
+        self.namefileopentransstate = "opentransact.txt"
     def create_files(self):
         if os.path.isfile(self.namefile) == False:
             open(self.namefile, "w")

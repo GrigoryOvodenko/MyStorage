@@ -35,17 +35,31 @@ async def opentransaction(opentransdataclass:OpenTransDataClass):
         status1 = requests.post(f"http://127.0.0.1:5000/putdata/", json={'flag':myflag,'key': key, 'value': value})
         if status1.status_code ==200:
             requests.post(f"http://127.0.0.1:5000/commitransaction/", json={})
-        # with open(namefileopentransstate, "w") as f:
-        #     f.write("False")
+            with open(namefileopentransstate, "w") as f:
+                f.write("False")
+        else:
+            with open(namefileopentransstate, "w") as f:
+                f.write("False")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Transaction is not closed",
+            )
     elif task == "deldata":
         key = opentransdataclass_dict['data']['key']
         with open(namefileopentransstate, "w") as f:
             f.write("True")
-        status1 = requests.post(f"http://127.0.0.1:5000/deldata/", json={'flag':myflag,'key': "143434"})
+        status1 = requests.post(f"http://127.0.0.1:5000/deldata/", json={'flag':myflag,'key': key})
         if status1.status_code == 200:
             requests.post(f"http://127.0.0.1:5000/commitransaction/", json={})
-        with open(namefileopentransstate, "w") as f:
-            f.write("False")
+            with open(namefileopentransstate, "w") as f:
+                f.write("False")
+        else:
+            with open(namefileopentransstate, "w") as f:
+                f.write("False")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Transaction is not closed",
+            )
     else:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

@@ -8,21 +8,16 @@ import transactionmodule
 import os
 app1 = FastAPI()
 transactionconstr = transactionmodule.TransactionCls()
-namefile = "storage.txt"
-namefilelog = "logjournal.txt"
-namefiletrans = "transactions.txt"
-namefileopentransstate = "opentransact.txt"
-commonfunctions =CommonFunctions.CommonCls(namefile,namefilelog,namefiletrans,namefileopentransstate)
+
+commonfunctions =CommonFunctions.CommonCls()
 commonfunctions.create_files()
 
-@app1.post("/test")
-async def test():
-   return {}
+
 @app1.post("/putdata")
 async def putdata(savedataclass:SaveDataClass):
     savedataclass_dict = savedataclass.dict()
     flag=savedataclass_dict['flag']
-    print("flag:",flag)
+    print("flag putdata:",flag)
     # в случае если транзакций открытых нет
     if flag == False:
 
@@ -52,6 +47,7 @@ async def deldata(deldataclass:DelDataClass):
     deldataclass_dict = deldataclass.dict()
     # в случае если транзакций открытых нет
     flag=deldataclass_dict['flag']
+    print("flag deldata:", flag)
     if flag == False:
 
         key = deldataclass_dict['key']
