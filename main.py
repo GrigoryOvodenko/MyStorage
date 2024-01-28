@@ -1,61 +1,70 @@
 from fastapi import FastAPI, HTTPException, status
 from fastapi.responses import PlainTextResponse,UJSONResponse
-from models import SaveDataClass,GetDataClass,DelDataClass,ValDataClass
+from models import SaveDataClass,GetDataClass,DelDataClass,ValDataClass,OpenTransDataClass
 import CommonFunctions
 import datetime
-
-
+import requests
+import transactionmodule
 import os
 app = FastAPI()
+#app1 =FastAPI()
 namefile = "storage.txt"
 namefilelog = "logjournal.txt"
-commonfunctions =CommonFunctions.CommonCls(namefile,namefilelog)
-commonfunctions.create_file()
-commonfunctions.create_file()
-flag =False
-# сохранить значение по ключу
-@app.post("/putdata")
-async def putdata(savedataclass:SaveDataClass):
-    savedataclass_dict = savedataclass.dict()
-
-    # в случае если транзакций открытых нет
-    if flag == False:
+namefiletrans = "transactions.txt"
+namefileopentransstate = "opentransact.txt"
+commonfunctions =CommonFunctions.CommonCls(namefile,namefilelog,namefiletrans,namefileopentransstate)
 
 
-        #!check
-        key = savedataclass_dict['key']
-        value = savedataclass_dict['value']
-        fl,indfound,valuefound = commonfunctions.get_my(key)
-        print("fl check:",fl,key,value,indfound)
-        if fl == False:
-            # we will delete because we have data and insert new
-            commonfunctions.deletedata(indfound,key)
-            commonfunctions.insdata( key, value)
-        else:
-            # we record new
-            commonfunctions.insdata(key,value)
+#flag =False
+
+
+@app.post("/opentransaction")
+async def opentransaction(opentransdataclass:OpenTransDataClass):
+    opentransdataclass_dict = opentransdataclass.dict()
+    print("opentransdataclass_dict:",opentransdataclass_dict)
+    # print("flag:",flag)
+    with open(namefileopentransstate,"r") as fileop:
+        myflag = fileop.readline()
+
+    task = opentransdataclass_dict['task']
+    if task == "putdata":
+        key=opentransdataclass_dict['data']['key']
+        value = opentransdataclass_dict['data']['value']
+        with open(namefileopentransstate, "w") as f:
+            f.write("True")
+        status1 = requests.post(f"http://127.0.0.1:5000/putdata/", json={'flag':myflag,'key': key, 'value': value})
+        if status1.status_code ==200:
+            requests.post(f"http://127.0.0.1:5000/commitransaction/", json={})
+        # with open(namefileopentransstate, "w") as f:
+        #     f.write("False")
+    elif task == "deldata":
+        key = opentransdataclass_dict['data']['key']
+        with open(namefileopentransstate, "w") as f:
+            f.write("True")
+        status1 = requests.post(f"http://127.0.0.1:5000/deldata/", json={'flag':myflag,'key': "143434"})
+        if status1.status_code == 200:
+            requests.post(f"http://127.0.0.1:5000/commitransaction/", json={})
+        with open(namefileopentransstate, "w") as f:
+            f.write("False")
     else:
         raise HTTPException(
-                            status_code=status.HTTP_400_BAD_REQUEST,
-                            detail=f"Another transaction is opened",
-                        )
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Type of Task is not correct",
+        )
 
-    return [{'success':True}]
+
 
 @app.post("/getdata")
 async def getdata(getdataclass:GetDataClass):
-    getdataclass_dict = getdataclass.dict()
+        getdataclass_dict = getdataclass.dict()
     # в случае если транзакций открытых нет
-    if flag == False:
-        print(getdataclass_dict)
-        print(namefile)
+
         #!check
         key = getdataclass_dict['key']
         fl,indfound,valuefound = commonfunctions.get_my(key)
-        print("fl check:",fl)
+
         if fl == False:
 
-            print("NO:",key,valuefound)
             commonfunctions.writelog( f"get success key:{key} value:{valuefound}-time {str(datetime.datetime.now())}")
         else:
             # value is not found by key
@@ -65,57 +74,20 @@ async def getdata(getdataclass:GetDataClass):
                 detail=f"Value is not found",
             )
 
-    else:
-        raise HTTPException(
-                            status_code=status.HTTP_400_BAD_REQUEST,
-                            detail=f"Another transaction is opened",
-                        )
 
-    return [{'success': True,'value':valuefound}]
+
+        return [{'success': True,'value':valuefound}]
 
 
 
-@app.post("/deldata")
-async def deldata(deldataclass:DelDataClass):
-    deldataclass_dict = deldataclass.dict()
-    # в случае если транзакций открытых нет
-    if flag == False:
-        print(deldataclass_dict)
-        print(namefile)
-        #!check
-        key = deldataclass_dict['key']
-        fl,indfound,valuefound = commonfunctions.get_my(key)
-        print("fl check del:",fl)
-        print(fl,indfound,valuefound)
-
-        if fl == False:
-            # we will delete because we have data and insert new
-            print("NO:",key,valuefound)
-            commonfunctions.writelog( f"delete success key:{key} value:{valuefound}-time {str(datetime.datetime.now())}")
-            commonfunctions.deletedata(indfound, key)
-        else:
-            # value is not found by key
-            commonfunctions.writelog(f"delete failed key:{key}-time {str(datetime.datetime.now())}")
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Key is not found",
-            )
-
-    else:
-        raise HTTPException(
-                            status_code=status.HTTP_400_BAD_REQUEST,
-                            detail=f"Another transaction is opened",
-                        )
-
-    return [{'success': True}]
 
 
 
 @app.post("/findkeys")
 async def findkeys(valdataclass:ValDataClass):
-    valdataclass_dict = valdataclass.dict()
+        valdataclass_dict = valdataclass.dict()
     # в случае если транзакций открытых нет
-    if flag == False:
+
 
         valueinp = valdataclass_dict['value']
         mykeys = commonfunctions.findkeysbyvalue(valueinp)
@@ -134,10 +106,5 @@ async def findkeys(valdataclass:ValDataClass):
                 detail=f"Keys are not found",
             )
 
-    else:
-        raise HTTPException(
-                            status_code=status.HTTP_400_BAD_REQUEST,
-                            detail=f"Another transaction is opened",
-                        )
 
-    return [{'success': True,'data':mykeys}]
+        return [{'success': True,'data':mykeys}]

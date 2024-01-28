@@ -13,14 +13,20 @@ import random
 #         print(x)
 #ty9694910498
 #put data
-#y = requests.post(f"http://127.0.0.1:8000/putdata/",json={'key':"ty5307938691776567599211",'value':444})
-
-
-# y2 = requests.post(f"http://127.0.0.1:8000/getdata/",json={'key':"ty1357159654"})
+# y1 = requests.post(f"http://127.0.0.1:8000/putdata/",json={'key':"143434",'value':'990sdfj','flag':False})
+# print(y1.json())
+# #
+# y2 = requests.post(f"http://127.0.0.1:8000/getdata/",json={'key':"143434"})
 # print(y2.json())
-
-# y3= requests.post(f"http://127.0.0.1:8000/deldata/",json={'key':"ty530793869177"})
+# # #
+# y3= requests.post(f"http://127.0.0.1:8000/deldata/",json={'key':"143434"})
 # print(y3.json(),y3.status_code)
+# # #
+# y4= requests.post(f"http://127.0.0.1:8000/findkeys/",json={'value':'77b'})
+# print(y4.json(),y4.status_code)
 
-y4= requests.post(f"http://127.0.0.1:8000/findkeys/",json={'value':'11'})
-print(y4.json(),y4.status_code)
+y5= requests.post(f"http://127.0.0.1:8000/opentransaction/",json={'task':'putdata','data':{'key':"143434",'value':'114'}})
+print(y5.json(),y5.status_code)
+#deldata
+# y6= requests.post(f"http://127.0.0.1:8000/opentransaction/",json={'task':'deldata','data':{'key':"143434"}})
+# print(y6.json(),y6.status_code)
