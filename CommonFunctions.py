@@ -9,7 +9,7 @@ class CommonCls:
         self.namefilelog = "logjournal.txt"
         self.transactionfile = "transactions.txt"
         self.namefileopentransstate = "opentransact.txt"
-        self.bigstorage="BigStorage.txt"
+        self.bigstorage = "BigStorage.txt"
 
     def recordopentransact(self, flag):
         with open(self.namefileopentransstate, "w") as f:
@@ -58,8 +58,8 @@ class CommonCls:
         with open("listTransaction.txt", "a") as f:
             for el in data:
                 f.write(el)
-        with open(self.namefile, 'r') as fileresend:
-            data_old_resend=fileresend.readlines()
+        with open(self.namefile, "r") as fileresend:
+            data_old_resend = fileresend.readlines()
 
         with open("BigStorage.txt", "w") as filereceive:
             filereceive.writelines(data_old_resend)

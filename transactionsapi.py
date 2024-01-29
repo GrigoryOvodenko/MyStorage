@@ -39,7 +39,7 @@ async def putdata(savedataclass: SaveDataClass):
             detail=f"Another transaction is opened",
         )
 
-    return [{"success": True}]
+    return JSONResponse({"success": True})
 
 
 @app1.post("/deldata")
@@ -76,15 +76,16 @@ async def deldata(deldataclass: DelDataClass):
             detail=f"Another transaction is opened",
         )
 
-    return [{"success": True}]
+    return JSONResponse({"success": True})
 
 
 @app1.post("/commitransaction")
 async def commitransaction():
     flgcommit = transactionconstr.commit_transaction()
-    return [{"success": flgcommit}]
+    return JSONResponse({"success": flgcommit})
 
 
 @app1.post("/rollbackapp")
 async def rollbackapp():
     transactionconstr.rollbacktrans()
+    return JSONResponse({"success": True})

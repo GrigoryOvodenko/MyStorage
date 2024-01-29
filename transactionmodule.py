@@ -38,7 +38,6 @@ class TransactionCls:
         #
 
         for i in range(len(data) - 1, -1, -1):
-
             if data[i] == "commit\n":
                 continue
             if data[i] == "---Transcation start---\n":
@@ -48,7 +47,6 @@ class TransactionCls:
                 task = olddata.split(";")[0].split(":")[1]
                 key = olddata.split(";")[1].split(":")[1]
                 val = olddata.split(";")[2].split(":")[1]
-
 
                 if task == "putdata":
                     del myd[key]

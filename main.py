@@ -20,7 +20,6 @@ async def opentransaction(opentransdataclass: OpenTransDataClass):
     with open(namefileopentransstate, "r") as fileop:
         myflag = fileop.readline()
 
-
     if task == "putdata":
         commonfunctions.start_trans()
         key = opentransdataclass_dict["data"]["key"]
@@ -47,7 +46,6 @@ async def opentransaction(opentransdataclass: OpenTransDataClass):
             f"http://127.0.0.1:5000/deldata/", json={"flag": myflag, "key": key}
         )
         if status1.status_code == 200:
-
             requests.post(f"http://127.0.0.1:5000/commitransaction/", json={})
             commonfunctions.recordopentransact("False")
         else:
@@ -64,8 +62,8 @@ async def opentransaction(opentransdataclass: OpenTransDataClass):
     # переносим транзакции в постоянную область
     commonfunctions.transfertranscations()
 
+    return JSONResponse({"success": True})
 
-    return [{"success": True}]
 
 @app.post("/getdata")
 async def getdata(getdataclass: GetDataClass):
@@ -89,8 +87,7 @@ async def getdata(getdataclass: GetDataClass):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Value is not found",
         )
-
-    return [{"success": True, "value": valuefound}]
+    return JSONResponse({"success": True, "value": valuefound})
 
 
 @app.post("/findkeys")
@@ -116,4 +113,4 @@ async def findkeys(valdataclass: ValDataClass):
             detail=f"Keys are not found",
         )
 
-    return [{"success": True, "data": mykeys}]
+    return JSONResponse({"success": True, "data": mykeys})
