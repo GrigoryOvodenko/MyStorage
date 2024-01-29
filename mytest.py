@@ -25,10 +25,10 @@ import random
 # y4= requests.post(f"http://127.0.0.1:8000/findkeys/",json={'value':'99'})
 # print(y4.json(),y4.status_code)
 
-y5= requests.post(f"http://127.0.0.1:8000/opentransaction/",json={'task':'putdata','data':{'key':"5sf143434",'value':'99'}})
-print(y5.json(),y5.status_code)
+# y5= requests.post(f"http://127.0.0.1:8000/opentransaction/",json={'task':'putdata','data':{'key':"5sf143434",'value':'1800'}})
+# print(y5.json(),y5.status_code)
 # #deldata
-y6= requests.post(f"http://127.0.0.1:8000/opentransaction/",json={'task':'deldata','data':{'key':"ty901590992"}})
-print(y6.json(),y6.status_code)
+# y6= requests.post(f"http://127.0.0.1:8000/opentransaction/",json={'task':'deldata','data':{'key':"ty901590992"}})
+# print(y6.json(),y6.status_code)
 y7=requests.post("http://127.0.0.1:5000/rollbackapp")
 print(y7.status_code,y7.json())

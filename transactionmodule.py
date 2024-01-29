@@ -25,6 +25,15 @@ class TransactionCls:
     def rollbacktrans(self):
         with open(self.transactionfile, "r") as file:
             data = file.readlines()
+        with open(self.namefile, "r") as filem:
+            readdata = filem.readlines()
+        #print("readdata:",readdata)
+        myd={}
+        for myelem in readdata:
+            myd[myelem.split(";")[0].split(":")[1]]=myelem.split(";")[1].split(":")[1]
+        #
+        # open(self.namefile, "w")
+        print(myd)
         for i in range(len(data) - 1, -1, -1):
             #print(data[i], i)
             if data[i] == "commit\n":
@@ -36,22 +45,38 @@ class TransactionCls:
                 task = olddata.split(";")[0].split(":")[1]
                 key = olddata.split(";")[1].split(":")[1]
                 val = olddata.split(";")[2].split(":")[1]
-                with open(self.namefile,"r") as filem:
-                    readdata=filem.readlines()
-                #os.remove(f"{os.getcwd()}//{self.namefile}")  # remove old we have backup copy
-                print(task,len(readdata))
+                #print(task,key,val)
+        #
+        #
 
                 if task == "putdata":
-                    for el in readdata:
+                    del myd[key]
+                if task == "deldata":
+                    myd[key]=val
 
-                            #print(el)
-                            oldk=el.split(";")[0].split(":")[1]
-                            oldv = el.split(";")[1].split(":")[1]
-                            if oldk == key:
-                                print(key,val)
-                                continue
-                            else:
-                                print(el)
-                                # with open(self.namefile, "a") as file_obj:
-                                #     file_obj.writelines(el)
-                #print(task, key, val)
+        #             for el in readdata:
+        #                     print(el)
+        #                     oldk=el.split(";")[0].split(":")[1]
+        #                     oldv = el.split(";")[1].split(":")[1]
+        #                     if oldk == key:
+        #
+        #                         continue
+        #                     else:
+        #
+        #                         with open(self.namefile, "a") as file_obj:
+        #                             file_obj.write(el)
+        #
+        #             for el in readdata:
+        #                     oldk=el.split(";")[0].split(":")[1]
+        #                     oldv = el.split(";")[1].split(":")[1]
+        #                     print("res:",oldk,oldv)
+        #                     with open(self.namefile, "a") as file_obj:
+        #                         file_obj.write(el)
+        #             with open(self.namefile, "a") as file_obj:
+        #                 file_obj.write("key:" + str(key) + ";value:" + str(val))
+        #                 file_obj.write("\n")
+        print(myd)
+        open(self.namefile,"w")
+        with open(self.namefile,"a")  as file_obj:
+            for k in myd.keys():
+                file_obj.write("key:" + str(k) + ";value:" + str(myd[k]))
