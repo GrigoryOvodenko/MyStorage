@@ -12,6 +12,7 @@ namefileopentransstate = "opentransact.txt"
 commonfunctions = CommonFunctions.CommonCls()
 
 
+# открыть транзакцию в зависимости от типа задачи в транзакции
 @app.post("/opentransaction")
 async def opentransaction(opentransdataclass: OpenTransDataClass):
     opentransdataclass_dict = opentransdataclass.dict()
@@ -65,12 +66,12 @@ async def opentransaction(opentransdataclass: OpenTransDataClass):
     return JSONResponse({"success": True})
 
 
+# получить данные
 @app.post("/getdata")
 async def getdata(getdataclass: GetDataClass):
     getdataclass_dict = getdataclass.dict()
     # в случае если транзакций открытых нет
 
-    #!check
     key = getdataclass_dict["key"]
     fl, indfound, valuefound = commonfunctions.get_my(key)
 
@@ -90,11 +91,10 @@ async def getdata(getdataclass: GetDataClass):
     return JSONResponse({"success": True, "value": valuefound})
 
 
+# поиск ключей по значению
 @app.post("/findkeys")
 async def findkeys(valdataclass: ValDataClass):
     valdataclass_dict = valdataclass.dict()
-    # в случае если транзакций открытых нет
-
     valueinp = valdataclass_dict["value"]
     mykeys = commonfunctions.findkeysbyvalue(valueinp)
 
@@ -104,7 +104,6 @@ async def findkeys(valdataclass: ValDataClass):
         )
 
     else:
-        # keys are not found by value
         commonfunctions.writelog(
             f"get all keys for value:{valueinp} failed-time {str(datetime.datetime.now())}"
         )
@@ -114,5 +113,3 @@ async def findkeys(valdataclass: ValDataClass):
         )
 
     return JSONResponse({"success": True, "data": mykeys})
-
-

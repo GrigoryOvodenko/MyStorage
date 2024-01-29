@@ -13,6 +13,7 @@ commonfunctions = CommonFunctions.CommonCls()
 commonfunctions.create_files()
 
 
+# вставка данных
 @app1.post("/putdata")
 async def putdata(savedataclass: SaveDataClass):
     savedataclass_dict = savedataclass.dict()
@@ -42,6 +43,7 @@ async def putdata(savedataclass: SaveDataClass):
     return JSONResponse({"success": True})
 
 
+# удаление данных
 @app1.post("/deldata")
 async def deldata(deldataclass: DelDataClass):
     deldataclass_dict = deldataclass.dict()
@@ -79,12 +81,14 @@ async def deldata(deldataclass: DelDataClass):
     return JSONResponse({"success": True})
 
 
+# commit
 @app1.post("/commitransaction")
 async def commitransaction():
     flgcommit = transactionconstr.commit_transaction()
     return JSONResponse({"success": flgcommit})
 
 
+# rollback
 @app1.post("/rollbackapp")
 async def rollbackapp():
     transactionconstr.rollbacktrans()

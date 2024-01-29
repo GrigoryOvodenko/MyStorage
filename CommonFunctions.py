@@ -11,10 +11,12 @@ class CommonCls:
         self.namefileopentransstate = "opentransact.txt"
         self.bigstorage = "BigStorage.txt"
 
+    # запись открыта ли транзакция
     def recordopentransact(self, flag):
         with open(self.namefileopentransstate, "w") as f:
             f.write(flag)
 
+    # создание в случае необходимости файлов
     def create_files(self):
         if os.path.isfile(self.namefile) == False:
             open(self.namefile, "w")
@@ -27,13 +29,13 @@ class CommonCls:
 
         open(self.transactionfile, "w")
 
+    # запись логов
     def writelog(self, task):
         with open(self.namefilelog, "a") as file_log:
             file_log.write(f"{task}")
             file_log.write("\n")
 
-    # get with key value and check exist key + value or not
-
+    # получить по ключу значение и проверить существует ли ключ+значение или нет
     def get_my(self, keysearch):
         with open(self.bigstorage, "r") as file_:
             data = file_.readlines()
@@ -47,11 +49,13 @@ class CommonCls:
                 return False, i, val
         return True, -1, -1
 
+    # начинаем транзакцию
     def start_trans(self):
         with open(self.transactionfile, "a") as file_obj:
             file_obj.write("---Transcation start---")
             file_obj.write("\n")
 
+    # перенос в итоговое хранилище транзакций и данных
     def transfertranscations(self):
         with open(self.transactionfile, "r") as file1:
             data = file1.readlines()
@@ -64,11 +68,13 @@ class CommonCls:
         with open("BigStorage.txt", "w") as filereceive:
             filereceive.writelines(data_old_resend)
 
+    # запись задачи
     def write_task(self, nametasktrans):
         with open(self.transactionfile, "a") as file_obj:
             file_obj.writelines(nametasktrans)
             file_obj.write("\n")
 
+    # удаление данных
     def deletedata(self, ind, key, value):
         with open(self.namefile, "r") as file_:
             data = file_.readlines()
@@ -87,6 +93,7 @@ class CommonCls:
             f"delete success key:{key} value:{value}-time {str(datetime.datetime.now())}"
         )
 
+    # поиск ключей по значению
     def findkeysbyvalue(self, value):
         with open(self.bigstorage, "r") as file_:
             data = file_.readlines()

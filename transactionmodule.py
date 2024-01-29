@@ -6,6 +6,7 @@ class TransactionCls:
         self.transactionfile = "transactions.txt"
         self.namefile = "storage.txt"
 
+    # сделать commit транзакции
     def commit_transaction(self):
         try:
             with open(self.transactionfile, "a") as file_:
@@ -15,6 +16,7 @@ class TransactionCls:
         except:
             return False
 
+    # проверка закрыта или нет транзакция
     def define_transaction(self):
         with open(self.transactionfile, "r") as file_:
             data = file_.readlines()
@@ -26,6 +28,7 @@ class TransactionCls:
         else:
             return True
 
+    # функция откатить изменения
     def rollbacktrans(self):
         with open(self.transactionfile, "r") as file:
             data = file.readlines()
