@@ -15,13 +15,14 @@ commonfunctions = CommonFunctions.CommonCls()
 @app.post("/opentransaction")
 async def opentransaction(opentransdataclass: OpenTransDataClass):
     opentransdataclass_dict = opentransdataclass.dict()
+    task = opentransdataclass_dict["task"]
 
-    commonfunctions.start_trans()
     with open(namefileopentransstate, "r") as fileop:
         myflag = fileop.readline()
 
-    task = opentransdataclass_dict["task"]
+
     if task == "putdata":
+        commonfunctions.start_trans()
         key = opentransdataclass_dict["data"]["key"]
         value = opentransdataclass_dict["data"]["value"]
         commonfunctions.recordopentransact("True")
@@ -46,6 +47,7 @@ async def opentransaction(opentransdataclass: OpenTransDataClass):
             f"http://127.0.0.1:5000/deldata/", json={"flag": myflag, "key": key}
         )
         if status1.status_code == 200:
+
             requests.post(f"http://127.0.0.1:5000/commitransaction/", json={})
             commonfunctions.recordopentransact("False")
         else:
@@ -62,6 +64,8 @@ async def opentransaction(opentransdataclass: OpenTransDataClass):
     # переносим транзакции в постоянную область
     commonfunctions.transfertranscations()
 
+
+    return [{"success": True}]
 
 @app.post("/getdata")
 async def getdata(getdataclass: GetDataClass):

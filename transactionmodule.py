@@ -18,7 +18,7 @@ class TransactionCls:
     def define_transaction(self):
         with open(self.transactionfile, "r") as file_:
             data = file_.readlines()
-        print("define_transaction:", data)
+
         file_.close()
         #  если последний элемент commit то транзакция закрыта
         if data == [] or data[-2] == "commit":
@@ -31,15 +31,14 @@ class TransactionCls:
             data = file.readlines()
         with open(self.namefile, "r") as filem:
             readdata = filem.readlines()
-        # print("readdata:",readdata)
+
         myd = {}
         for myelem in readdata:
             myd[myelem.split(";")[0].split(":")[1]] = myelem.split(";")[1].split(":")[1]
         #
-        # open(self.namefile, "w")
-        print(myd)
+
         for i in range(len(data) - 1, -1, -1):
-            # print(data[i], i)
+
             if data[i] == "commit\n":
                 continue
             if data[i] == "---Transcation start---\n":
@@ -49,9 +48,7 @@ class TransactionCls:
                 task = olddata.split(";")[0].split(":")[1]
                 key = olddata.split(";")[1].split(":")[1]
                 val = olddata.split(";")[2].split(":")[1]
-                # print(task,key,val)
-                #
-                #
+
 
                 if task == "putdata":
                     del myd[key]

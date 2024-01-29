@@ -9,6 +9,7 @@ class CommonCls:
         self.namefilelog = "logjournal.txt"
         self.transactionfile = "transactions.txt"
         self.namefileopentransstate = "opentransact.txt"
+        self.bigstorage="BigStorage.txt"
 
     def recordopentransact(self, flag):
         with open(self.namefileopentransstate, "w") as f:
@@ -34,7 +35,7 @@ class CommonCls:
     # get with key value and check exist key + value or not
 
     def get_my(self, keysearch):
-        with open(self.namefile, "r") as file_:
+        with open(self.bigstorage, "r") as file_:
             data = file_.readlines()
         file_.close()
         for i in range(0, len(data), 1):
@@ -57,6 +58,11 @@ class CommonCls:
         with open("listTransaction.txt", "a") as f:
             for el in data:
                 f.write(el)
+        with open(self.namefile, 'r') as fileresend:
+            data_old_resend=fileresend.readlines()
+
+        with open("BigStorage.txt", "w") as filereceive:
+            filereceive.writelines(data_old_resend)
 
     def write_task(self, nametasktrans):
         with open(self.transactionfile, "a") as file_obj:
@@ -74,7 +80,7 @@ class CommonCls:
         with open(self.namefile, "a") as file_obj:
             file_obj.writelines(new_result)
         file_obj.close()
-
+        self.start_trans()
         self.write_task(f"task:deldata;key:{key};value:{value}")
 
         self.writelog(
@@ -82,7 +88,7 @@ class CommonCls:
         )
 
     def findkeysbyvalue(self, value):
-        with open(self.namefile, "r") as file_:
+        with open(self.bigstorage, "r") as file_:
             data = file_.readlines()
         file_.close()
         lst = []
