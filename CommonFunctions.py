@@ -1,7 +1,5 @@
 import os
-
 import datetime
-
 
 class CommonCls:
     def __init__(self):
