@@ -15,7 +15,7 @@ uvicorn transactionsapi:app1 --port 5000
 
 1.This application consists of several files: main.py (application launch, APIs related to opening a transaction and reading), transactionssapi.py (APIs related to writing), models.py (primary validation of input data types), CommonFunctions.py ( processing, checking and output functions, general functions) .
 The following were used to write programs: Python, Fast Api.
-To format the code: black
+To format the code: black </br>
 2.To run the api in the console, enter: uvicorn main:app --port 8000 uvicorn transactionsapi:app1 --port 5000
 3.BigStorage.txt - used to search for data; listTransaction.txt - final transaction storage; logjournal.txt - logging of actions
 4.opentransact.txt - used to check the status of the transaction (open or not)
