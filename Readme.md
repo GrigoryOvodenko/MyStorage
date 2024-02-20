@@ -13,3 +13,13 @@ uvicorn transactionsapi:app1 --port 5000
 7. Для задач записи имеет значение открыта транзакция или нет ,поэтому происходит проверка флага(открыта транзакция или нет)
 8. В случае с задачи чтения,это не имеет значения так как мы работаем только с хранилищем финальным
 
+1.This application consists of several files: main.py (application launch, APIs related to opening a transaction and reading), transactionssapi.py (APIs related to writing), models.py (primary validation of input data types), CommonFunctions.py ( processing, checking and output functions, general functions) .
+The following were used to write programs: Python, Fast Api.
+To format the code: black
+2.To run the api in the console, enter: uvicorn main:app --port 8000 uvicorn transactionsapi:app1 --port 5000
+3.BigStorage.txt - used to search for data; listTransaction.txt - final transaction storage; logjournal.txt - logging of actions
+4.opentransact.txt - used to check the status of the transaction (open or not)
+5.transactions.txt - list of temporary transactions not moved to the final storage
+6.storage.txt - temporary date storage before transfer
+7.For recording tasks, it matters whether the transaction is open or not, so the flag is checked (whether the transaction is open or not)
+8.In the case of reading tasks, this does not matter since we only work with the final storage
