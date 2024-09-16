@@ -1,3 +1,33 @@
+Задача:Необходимо спроектировать и реализовать веб-приложение с использованием языка Python.
+
+Приложения представляет собой хранилище “ключ-значение” с сохранением загруженных данных при помощи файлов операционной системы. 
+
+Поддерживает следующие операции:
+сохранить значение по ключу;
+получить значение по ключу;
+удалить значение по ключу;
+найти все ключи, у которых значения равны искомому;
+открыть транзакцию (можно открыть вложенные одна в другую транзакции, как матрешка);
+сделать роллбэк (откатывается последняя транзакция);
+сделать коммит (коммитятся все вложенные транзакции).
+
+
+
+Task: It is necessary to design and implement a web application using the Python language.
+
+The application is a key-value store with saving loaded data using operating system files.
+
+Supports the following operations:
+save a value by key;
+get a value by key;
+delete a value by key;
+find all keys whose values ​​are equal to the desired one;
+open a transaction (you can open transactions nested one inside another, like a Russian doll);
+make a rollback (the last transaction is rolled back);
+make a commit (all nested transactions are committed).
+
+
+
 1. Данное приложение состоит из нескольких файлов:
 main.py (запуск приложения,API,связанные с открытие транзакции и чтением),transactionsapi.py(API,связанные с записью),models.py(первичная валидация типов входных данных),
 CommonFunctions.py(функции обработки,проверки и вывода,общие функции)
@@ -12,6 +42,8 @@ uvicorn transactionsapi:app1 --port 5000
 6. storage.txt -временное хранилище даты до переноса
 7. Для задач записи имеет значение открыта транзакция или нет ,поэтому происходит проверка флага(открыта транзакция или нет)
 8. В случае с задачи чтения,это не имеет значения так как мы работаем только с хранилищем финальным
+
+
 
 1.This application consists of several files: main.py (application launch, APIs related to opening a transaction and reading), transactionssapi.py (APIs related to writing), models.py (primary validation of input data types), CommonFunctions.py ( processing, checking and output functions, general functions) .
 The following were used to write programs: Python, Fast Api.
